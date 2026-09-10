@@ -20,6 +20,8 @@ type crawlResult struct{
 	Page seo.AnalysisResult
 	Depth int
 	Links []string
+	Issues []seo.SEOIssue
+	Score int
 }
 
 func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- crawlResult, wg *sync.WaitGroup, rateLimiter <-chan time.Time) {
@@ -44,6 +46,8 @@ func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- c
 			continue
 		}
 		data, err := seo.Analyze(baseUrl, doc, res.StatusCode)
+		issues := seo.CheckRules(data)
+		score := seo.CalculateScore(issues)
 		if err!=nil{
 			fmt.Println("Error:",err.Error())
 			continue
@@ -53,6 +57,8 @@ func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- c
 			Page: *data,
 			Depth: job.Depth,
 			Links: links,
+			Issues: issues,
+			Score: score,
 		}
 	}
 }

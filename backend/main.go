@@ -22,6 +22,12 @@ func main() {
 		fmt.Println("Title:", page.Page.Title)
 		fmt.Println("H1:", page.Page.H1Count)
 		fmt.Println("Images:", page.Page.ImageCount)
+		fmt.Println()
+		fmt.Println("Issues:")
+		for _, issue := range page.Issues{
+			fmt.Printf("[%s] %s\n", issue.Severity, issue.Message)
+		}
+		fmt.Println("Score:",page.Score)
 		fmt.Println("---")
 	}
 }
