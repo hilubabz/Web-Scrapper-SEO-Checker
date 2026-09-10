@@ -10,8 +10,6 @@ func main() {
 	url := "https://utsargamanandhar.com.np"
 
 	c := crawler.New()
-	c.MaxDepth=2
-	c.MaxPages=5
 
 	err := c.Crawl(url)
 	if err!=nil{

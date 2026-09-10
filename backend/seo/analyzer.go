@@ -39,7 +39,7 @@ func (anRes *AnalysisResult) PrintResult(){
 
 func Analyze(rawUrl *url.URL, doc *goquery.Document, statusCode int) (*AnalysisResult, error) {
 	title := doc.Find("title")
-	metaDesc, exists := doc.Find(`meta["description"]`).Attr("content")
+	metaDesc, exists := doc.Find(`meta[name="description"]`).Attr("content")
 	images := doc.Find("img")
 	imagesWithoutAlt:=0
 	images.Each(func(index int, accessor *goquery.Selection){

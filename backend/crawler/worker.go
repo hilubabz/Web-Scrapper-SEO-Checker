@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"sync"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/hilubabz/web-scraper-seo/seo"
@@ -21,9 +22,11 @@ type crawlResult struct{
 	Links []string
 }
 
-func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- crawlResult, wg *sync.WaitGroup) {
+func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- crawlResult, wg *sync.WaitGroup, rateLimiter <-chan time.Time) {
 	defer wg.Done()
 	for job := range jobs {
+		fmt.Printf("Worker %d scraping %s\n", id, job.Url)
+		<-rateLimiter
 		res, err := client.Get(job.Url)
 		if err!=nil{
 			fmt.Println("Error:",err.Error())
