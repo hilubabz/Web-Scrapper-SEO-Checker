@@ -17,7 +17,7 @@ type crawlData struct {
 }
 
 type crawlResult struct{
-	Url string
+	Page seo.AnalysisResult
 	Depth int
 	Links []string
 }
@@ -38,7 +38,6 @@ func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- c
 			fmt.Println("Error:",err.Error())
 			continue
 		}
-		fmt.Println("Parsing",job.Url)
 		baseUrl, err := url.Parse(job.Url)
 		if err!=nil{
 			fmt.Println("Error:",err.Error())
@@ -49,10 +48,9 @@ func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- c
 			fmt.Println("Error:",err.Error())
 			continue
 		}
-		data.PrintResult()
 		links := seo.ExtractInternalLinks(doc, baseUrl)
 		results <- crawlResult{
-			Url: job.Url,
+			Page: *data,
 			Depth: job.Depth,
 			Links: links,
 		}

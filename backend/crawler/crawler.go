@@ -41,13 +41,14 @@ func (c *Crawler) markAsVisited(URL string) bool{
 	return true
 }
 
-func (c *Crawler) Crawl(rawURL string) error{
+func (c *Crawler) Crawl(rawURL string) ([]crawlResult, error){
 	baseURL, err := seo.NormalizeURL(rawURL)
 	if err!=nil{
-		return err
+		return nil, err
 	}
 	jobs := make(chan crawlData, c.MaxPages)
 	results := make(chan crawlResult)
+	pages := make([]crawlResult,0)
 	var wg sync.WaitGroup
 	workerCount:=4
 	wg.Add(workerCount)
@@ -59,7 +60,7 @@ func (c *Crawler) Crawl(rawURL string) error{
 		close(results)
 	}()
 	if !c.markAsVisited(baseURL){
-		return nil
+		return pages, nil
 	}
 	
 	pendingJobs := 1
@@ -73,7 +74,8 @@ func (c *Crawler) Crawl(rawURL string) error{
 		if !ok{
 			break
 		}
-		fmt.Printf("%s scraped successfully\n",result.Url)
+		fmt.Printf("%s scraped successfully\n",result.Page.URL)
+		pages = append(pages, result)
 		pendingJobs--
 		if result.Depth < c.MaxDepth{
 			for _, link := range result.Links{
@@ -96,5 +98,5 @@ func (c *Crawler) Crawl(rawURL string) error{
 	}
 	wg.Wait()
 	fmt.Println("Pages crawled:",len(c.visited))
-	return nil
+	return pages, nil
 }
