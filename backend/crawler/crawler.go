@@ -74,6 +74,10 @@ func (c *Crawler) Crawl(rawURL string) ([]crawlResult, error){
 		if !ok{
 			break
 		}
+		if result.Err != nil{
+			fmt.Println("Crawl Failed",err)
+			continue
+		}
 		fmt.Printf("%s scraped successfully\n",result.Page.URL)
 		pages = append(pages, result)
 		pendingJobs--

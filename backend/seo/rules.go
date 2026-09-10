@@ -1,5 +1,7 @@
 package seo
 
+import "strings"
+
 type Severity string
 
 const (
@@ -78,6 +80,39 @@ func CheckRules(result *AnalysisResult) []SEOIssue {
 			Rule:     "missing-image-alt",
 			Severity: SeverityWarning,
 			Message:  "Some images are missing alt text.",
+		})
+	}
+
+	if !result.HasCanonical {
+		issues = append(issues, SEOIssue{
+			Rule:     "missing-canonical",
+			Severity: SeverityWarning,
+			Message:  "Page is missing a canonical URL.",
+		})
+	}
+
+	if result.MetaDescriptionLen > 0 &&
+		result.MetaDescriptionLen < 70 {
+		issues = append(issues, SEOIssue{
+			Rule:     "meta-description-too-short",
+			Severity: SeverityWarning,
+			Message:  "Meta description is shorter than 70 characters.",
+		})
+	}
+
+	if result.MetaDescriptionLen > 160 {
+		issues = append(issues, SEOIssue{
+			Rule:     "meta-description-too-long",
+			Severity: SeverityWarning,
+			Message:  "Meta description is longer than 160 characters.",
+		})
+	}
+
+	if !strings.HasPrefix(result.URL.String(), "https://") {
+		issues = append(issues, SEOIssue{
+			Rule:     "not-https",
+			Severity: SeverityError,
+			Message:  "Page is not using HTTPS.",
 		})
 	}
 

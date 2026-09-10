@@ -22,6 +22,7 @@ type crawlResult struct{
 	Links []string
 	Issues []seo.SEOIssue
 	Score int
+	Err error
 }
 
 func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- crawlResult, wg *sync.WaitGroup, rateLimiter <-chan time.Time) {
@@ -31,25 +32,37 @@ func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- c
 		<-rateLimiter
 		res, err := client.Get(job.Url)
 		if err!=nil{
-			fmt.Println("Error:",err.Error())
+			results<-crawlResult{
+				Depth: job.Depth,
+				Err: err,
+			}
 			continue
 		}
 		doc, err := goquery.NewDocumentFromReader(res.Body)
 		res.Body.Close()
 		if err != nil{
-			fmt.Println("Error:",err.Error())
+			results<-crawlResult{
+				Depth: job.Depth,
+				Err: err,
+			}
 			continue
 		}
 		baseUrl, err := url.Parse(job.Url)
 		if err!=nil{
-			fmt.Println("Error:",err.Error())
+			results<-crawlResult{
+				Depth: job.Depth,
+				Err: err,
+			}
 			continue
 		}
 		data, err := seo.Analyze(baseUrl, doc, res.StatusCode)
 		issues := seo.CheckRules(data)
 		score := seo.CalculateScore(issues)
 		if err!=nil{
-			fmt.Println("Error:",err.Error())
+			results<-crawlResult{
+				Depth: job.Depth,
+				Err: err,
+			}
 			continue
 		}
 		links := seo.ExtractInternalLinks(doc, baseUrl)

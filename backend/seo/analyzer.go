@@ -19,6 +19,13 @@ type AnalysisResult struct {
 	ImageCount         int
 	ImagesWithoutAlt   int
 	LinkCount          int
+	CanonicalURL       string
+	HasCanonical       bool
+	RobotsMeta         string
+	HasRobotsMeta      bool
+	InternalLinkCount  int
+	ExternalLinkCount  int
+	MetaDescriptionLen int
 }
 
 func (anRes *AnalysisResult) PrintResult(){
@@ -48,6 +55,30 @@ func Analyze(rawUrl *url.URL, doc *goquery.Document, statusCode int) (*AnalysisR
 			imagesWithoutAlt++
 		}
 	})
+	canonicalURL, hasCanonical := doc.Find(`link[rel="canonical"]`).Attr("href")
+	robotsMeta, hasRobotsMeta := doc.Find(`meta[name="robots"]`).Attr("content")
+	descriptionLength := len(metaDesc)
+	internalLinks := 0
+	externalLinks := 0
+
+	doc.Find("a[href]").Each(func(_ int, selection *goquery.Selection) {
+		href, exists := selection.Attr("href")
+
+		if !exists || href == "" {
+			return
+		}
+
+		parsedLink, err := rawUrl.Parse(href)
+		if err != nil {
+			return
+		}
+
+		if parsedLink.Hostname() == rawUrl.Hostname() {
+			internalLinks++
+		} else {
+			externalLinks++
+		}
+	})
 	result := &AnalysisResult{
 		URL: rawUrl,
 		StatusCode: statusCode,
@@ -60,6 +91,13 @@ func Analyze(rawUrl *url.URL, doc *goquery.Document, statusCode int) (*AnalysisR
 		ImageCount: images.Length(),
 		ImagesWithoutAlt: imagesWithoutAlt,
 		LinkCount: doc.Find("a").Length(),
+		CanonicalURL: canonicalURL,
+		HasCanonical: hasCanonical,
+		RobotsMeta: robotsMeta,
+		HasRobotsMeta: hasRobotsMeta,
+		MetaDescriptionLen: descriptionLength,
+		InternalLinkCount: internalLinks,
+		ExternalLinkCount: externalLinks,
 	}
 	return result, nil
 }

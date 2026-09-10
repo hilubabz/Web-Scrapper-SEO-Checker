@@ -1,12 +1,42 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/hilubabz/web-scraper-seo/crawler"
+	"github.com/hilubabz/web-scraper-seo/sql"
+	"github.com/hilubabz/web-scraper-seo/sql/generated"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	dbURL := os.Getenv("DATABASE_URL")
+
+	ctx := context.Background()
+
+	pool, err := sql.Connect(ctx, dbURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer pool.Close()
+	
+	queries := sql.NewStore(pool)
+
+	project, err := queries.CreateProject(ctx,generated.CreateProjectParams{
+		Name: "Example Website",
+		BaseUrl: "https://example.com",
+	})
+	if err!=nil{
+		log.Fatal(err)
+	}
+	fmt.Println("Project created",project.ID)
+
 	url := "https://utsargamanandhar.com.np"
 
 	c := crawler.New()
