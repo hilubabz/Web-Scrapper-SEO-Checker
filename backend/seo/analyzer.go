@@ -8,7 +8,8 @@ import (
 )
 
 type AnalysisResult struct {
-	URL                *url.URL
+	URL string
+
 	StatusCode         int
 	Title              string
 	TitleLength        int
@@ -19,6 +20,7 @@ type AnalysisResult struct {
 	ImageCount         int
 	ImagesWithoutAlt   int
 	LinkCount          int
+
 	CanonicalURL       string
 	HasCanonical       bool
 	RobotsMeta         string
@@ -80,7 +82,7 @@ func Analyze(rawUrl *url.URL, doc *goquery.Document, statusCode int) (*AnalysisR
 		}
 	})
 	result := &AnalysisResult{
-		URL: rawUrl,
+		URL: rawUrl.String(),
 		StatusCode: statusCode,
 		Title: title.Text(),
 		TitleLength: len(title.Text()),

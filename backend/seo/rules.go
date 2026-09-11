@@ -108,7 +108,7 @@ func CheckRules(result *AnalysisResult) []SEOIssue {
 		})
 	}
 
-	if !strings.HasPrefix(result.URL.String(), "https://") {
+	if !strings.HasPrefix(result.URL, "https://") {
 		issues = append(issues, SEOIssue{
 			Rule:     "not-https",
 			Severity: SeverityError,
