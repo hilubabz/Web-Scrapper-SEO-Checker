@@ -11,9 +11,9 @@ const (
 )
 
 type SEOIssue struct {
-	Rule     string
-	Severity Severity
-	Message  string
+	Rule     string `json:"rule"`
+	Severity Severity `json:"severity"`
+	Message  string `json:"message"`
 }
 
 func CheckRules(result *AnalysisResult) []SEOIssue {

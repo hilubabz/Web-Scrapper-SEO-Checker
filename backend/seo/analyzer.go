@@ -8,26 +8,26 @@ import (
 )
 
 type AnalysisResult struct {
-	URL string
+	URL string `json:"url"`
 
-	StatusCode         int
-	Title              string
-	TitleLength        int
-	MetaDescription    string
-	HasMetaDescription bool
-	H1Count            int
-	H2Count            int
-	ImageCount         int
-	ImagesWithoutAlt   int
-	LinkCount          int
+	StatusCode         int `json:"statusCode"`
+	Title              string `json:"title"`
+	TitleLength        int `json:"titleLength"`
+	MetaDescription    string `json:"metaDescription"`
+	HasMetaDescription bool `json:"hasMetaDescription"`
+	H1Count            int `json:"h1Count"`
+	H2Count            int `json:"h2Count"`
+	ImageCount         int `json:"imageCount"`
+	ImagesWithoutAlt   int `json:"imagesWithoutAlt"`
+	LinkCount          int `json:"linkCount"`
 
-	CanonicalURL       string
-	HasCanonical       bool
-	RobotsMeta         string
-	HasRobotsMeta      bool
-	InternalLinkCount  int
-	ExternalLinkCount  int
-	MetaDescriptionLen int
+	CanonicalURL       string `json:"canonicalUrl"`
+	HasCanonical       bool `json:"hasCanonical"`
+	RobotsMeta         string `json:"robotsMeta"`
+	HasRobotsMeta      bool `json:"hasRobotsMeta"`
+	InternalLinkCount  int `json:"internalLinkCount"`
+	ExternalLinkCount  int `json:"externalLinkCount"`
+	MetaDescriptionLen int `json:"metaDescriptionLen"`
 }
 
 func (anRes *AnalysisResult) PrintResult(){

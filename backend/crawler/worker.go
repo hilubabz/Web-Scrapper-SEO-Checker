@@ -17,12 +17,12 @@ type crawlData struct {
 }
 
 type crawlResult struct{
-	Page seo.AnalysisResult
-	Depth int
-	Links []string
-	Issues []seo.SEOIssue
-	Score int
-	Err error
+	Page seo.AnalysisResult `json:"page"`
+	Depth int `json:"depth"`
+	Links []string `json:"links"`
+	Issues []seo.SEOIssue `json:"issues"`
+	Score int `json:"score"`
+	Err error `json:"-"`
 }
 
 func worker(id int, client *http.Client, jobs <-chan crawlData, results chan<- crawlResult, wg *sync.WaitGroup, rateLimiter <-chan time.Time) {

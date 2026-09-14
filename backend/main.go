@@ -1,33 +1,25 @@
 package main
 
 import (
-	"fmt"
+	"log"
+	"net/http"
 
+	"github.com/hilubabz/web-scraper-seo/audit"
 	"github.com/hilubabz/web-scraper-seo/crawler"
 )
 
 func main() {
-	url := "https://utsargamanandhar.com.np"
-
 	c := crawler.New()
 
-	crawlData, err := c.Crawl(url)
-	if err!=nil{
-		fmt.Println("Error:",err.Error())
-	}
+	service := audit.NewService(c)
+	handler := audit.NewHandler(service)
 
-	for _, page := range crawlData {
-		fmt.Println("URL:", page.Page.URL)
-		fmt.Println("Status:", page.Page.StatusCode)
-		fmt.Println("Title:", page.Page.Title)
-		fmt.Println("H1:", page.Page.H1Count)
-		fmt.Println("Images:", page.Page.ImageCount)
-		fmt.Println()
-		fmt.Println("Issues:")
-		for _, issue := range page.Issues{
-			fmt.Printf("[%s] %s\n", issue.Severity, issue.Message)
-		}
-		fmt.Println("Score:",page.Score)
-		fmt.Println("---")
+	http.HandleFunc("/api/audits", handler.CreateAudit)
+
+	log.Println("Server running on http://localhost:8080")
+
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
