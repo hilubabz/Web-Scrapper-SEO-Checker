@@ -6,13 +6,11 @@ func CalculateScore(issues []SEOIssue) int {
 	for _, issue := range issues {
 		switch issue.Severity {
 		case SeverityError:
-			score -= 15
-
+			score -= 20
 		case SeverityWarning:
-			score -= 5
-
+			score -= 8
 		case SeverityInfo:
-			score -= 1
+			score -= 2
 		}
 	}
 
