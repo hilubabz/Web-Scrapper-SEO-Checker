@@ -21,13 +21,13 @@ func main() {
 
 	server := audit.EnableCORS(mux)
 
-	log.Println("Server running on http://localhost:8080")
-
+	
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = ":8080"
+		port = "8080"
 	}
-	err := http.ListenAndServe(port, server)
+	log.Println("Server running on http://localhost:"+port)
+	err := http.ListenAndServe(":"+port, server)
 	if err != nil {
 		log.Fatal(err)
 	}
