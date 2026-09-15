@@ -3,6 +3,7 @@ package crawler
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -32,12 +33,13 @@ func New() *Crawler {
 }
 
 func (c *Crawler) markAsVisited(URL string) bool {
+	normalizedURL := strings.TrimRight(URL, "/")
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	if c.visited[URL] {
+	if c.visited[normalizedURL] {
 		return false
 	}
-	c.visited[URL] = true
+	c.visited[normalizedURL] = true
 	return true
 }
 
