@@ -17,7 +17,6 @@ export default function Home() {
     e.preventDefault();
     if (!url) return;
     
-    // basic validation
     let validUrl = url;
     if (!url.startsWith("http://") && !url.startsWith("https://")) {
       validUrl = "https://" + url;
@@ -47,7 +46,7 @@ export default function Home() {
   return (
     <div className="container" style={{ paddingBottom: "4rem" }}>
       <header className="app-header animate-fade-in">
-        <h1 className="app-title text-gradient">SEO Web Scraper</h1>
+        <h1 className="app-title text-gradient">SEO Web Analyzer</h1>
         <p className="app-subtitle">
           Enter a URL below to instantly analyze technical SEO issues, get an overall score, and see actionable recommendations.
         </p>

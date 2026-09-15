@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/hilubabz/web-scraper-seo/audit"
 	"github.com/hilubabz/web-scraper-seo/crawler"
@@ -22,7 +23,11 @@ func main() {
 
 	log.Println("Server running on http://localhost:8080")
 
-	err := http.ListenAndServe(":8080", server)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = ":8080"
+	}
+	err := http.ListenAndServe(port, server)
 	if err != nil {
 		log.Fatal(err)
 	}
