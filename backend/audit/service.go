@@ -17,7 +17,7 @@ func NewService(c *crawler.Crawler) *Service {
 	}
 }
 
-func (s *Service) Run(startURL string) (crawler.AuditResult, error) {
+func (s *Service) Run(startURL string, maxDepth int, maxPages int) (crawler.AuditResult, error) {
 	parsedURL, err := url.Parse(startURL)
 	if err != nil {
 		return crawler.AuditResult{}, fmt.Errorf("invalid URL")
@@ -35,7 +35,7 @@ func (s *Service) Run(startURL string) (crawler.AuditResult, error) {
 		)
 	}
 
-	pages, err := s.crawler.Crawl(startURL)
+	pages, err := s.crawler.Crawl(startURL, maxDepth, maxPages)
 	if err != nil {
 		return crawler.AuditResult{}, err
 	}

@@ -43,13 +43,13 @@ export interface AuditResult {
   totalIssues: number;
 }
 
-export async function runAudit(url: string): Promise<AuditResult> {
+export async function runAudit(url: string, maxDepth: number = 3, maxPages: number = 100): Promise<AuditResult> {
   const response = await fetch("http://localhost:8080/api/audits", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ url }),
+    body: JSON.stringify({ url, maxDepth, maxPages }),
   });
 
   if (!response.ok) {
