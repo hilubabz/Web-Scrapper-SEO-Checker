@@ -40,11 +40,5 @@ func (h *Handler) CreateAudit(w http.ResponseWriter, r *http.Request){
 	}
 	result, err := h.service.Run(req.URL)
 
-	err = json.NewEncoder(w).Encode(result)
-	if err!=nil{
-		writeError(w, http.StatusBadRequest, err.Error())
-		return 
-	}
-
 	writeJSON(w, http.StatusOK, result)
 }

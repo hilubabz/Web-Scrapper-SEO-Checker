@@ -14,11 +14,15 @@ func main() {
 	service := audit.NewService(c)
 	handler := audit.NewHandler(service)
 
-	http.HandleFunc("/api/audits", handler.CreateAudit)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/api/audits", handler.CreateAudit)
+
+	server := audit.EnableCORS(mux)
 
 	log.Println("Server running on http://localhost:8080")
 
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", server)
 	if err != nil {
 		log.Fatal(err)
 	}
