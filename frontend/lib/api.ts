@@ -43,14 +43,21 @@ export interface AuditResult {
   totalIssues: number;
 }
 
-export async function runAudit(url: string, maxDepth: number = 3, maxPages: number = 100): Promise<AuditResult> {
-  const response = await fetch("http://localhost:8080/api/audits", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+export async function runAudit(
+  url: string,
+  maxDepth: number = 3,
+  maxPages: number = 100,
+): Promise<AuditResult> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/audits`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ url, maxDepth, maxPages }),
     },
-    body: JSON.stringify({ url, maxDepth, maxPages }),
-  });
+  );
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);

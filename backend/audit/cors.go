@@ -3,8 +3,17 @@ package audit
 import "net/http"
 
 func EnableCORS(next http.Handler) http.Handler {
+	allowedOrigins := map[string]bool{
+		"http://localhost:3000":               true,
+		"https://seo.utsargamanandhar.com.np": true,
+	}
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000, https://seo.utsargamanandhar.com.np")
+		origin := r.Header.Get("Origin")
+		if allowedOrigins[origin] {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+		}
+
 		w.Header().Set(
 			"Access-Control-Allow-Methods",
 			"GET, POST, OPTIONS",
