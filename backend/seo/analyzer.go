@@ -10,33 +10,33 @@ import (
 type AnalysisResult struct {
 	URL string `json:"url"`
 
-	StatusCode         int `json:"statusCode"`
+	StatusCode         int    `json:"statusCode"`
 	Title              string `json:"title"`
-	TitleLength        int `json:"titleLength"`
+	TitleLength        int    `json:"titleLength"`
 	MetaDescription    string `json:"metaDescription"`
-	HasMetaDescription bool `json:"hasMetaDescription"`
-	H1Count            int `json:"h1Count"`
-	H2Count            int `json:"h2Count"`
-	ImageCount         int `json:"imageCount"`
-	ImagesWithoutAlt   int `json:"imagesWithoutAlt"`
-	LinkCount          int `json:"linkCount"`
+	HasMetaDescription bool   `json:"hasMetaDescription"`
+	H1Count            int    `json:"h1Count"`
+	H2Count            int    `json:"h2Count"`
+	ImageCount         int    `json:"imageCount"`
+	ImagesWithoutAlt   int    `json:"imagesWithoutAlt"`
+	LinkCount          int    `json:"linkCount"`
 
 	CanonicalURL       string `json:"canonicalUrl"`
-	HasCanonical       bool `json:"hasCanonical"`
+	HasCanonical       bool   `json:"hasCanonical"`
 	RobotsMeta         string `json:"robotsMeta"`
-	HasRobotsMeta      bool `json:"hasRobotsMeta"`
-	InternalLinkCount  int `json:"internalLinkCount"`
-	ExternalLinkCount  int `json:"externalLinkCount"`
-	MetaDescriptionLen int `json:"metaDescriptionLen"`
+	HasRobotsMeta      bool   `json:"hasRobotsMeta"`
+	InternalLinkCount  int    `json:"internalLinkCount"`
+	ExternalLinkCount  int    `json:"externalLinkCount"`
+	MetaDescriptionLen int    `json:"metaDescriptionLen"`
 }
 
-func (anRes *AnalysisResult) PrintResult(){
+func (anRes *AnalysisResult) PrintResult() {
 	fmt.Println("Status Code:", anRes.StatusCode)
 	fmt.Println("Title:", anRes.Title)
 	fmt.Println("Title Length:", anRes.TitleLength)
-	if anRes.HasMetaDescription{
+	if anRes.HasMetaDescription {
 		fmt.Println("Meta Description:", anRes.MetaDescription)
-	} else{
+	} else {
 		fmt.Println("No meta description found")
 	}
 	fmt.Println("H1 Count:", anRes.H1Count)
@@ -50,10 +50,10 @@ func Analyze(rawUrl *url.URL, doc *goquery.Document, statusCode int) (*AnalysisR
 	title := doc.Find("title")
 	metaDesc, exists := doc.Find(`meta[name="description"]`).Attr("content")
 	images := doc.Find("img")
-	imagesWithoutAlt:=0
-	images.Each(func(index int, accessor *goquery.Selection){
-		alt, exist:=accessor.Attr("alt")
-		if !exist || alt!=""{
+	imagesWithoutAlt := 0
+	images.Each(func(index int, accessor *goquery.Selection) {
+		alt, exist := accessor.Attr("alt")
+		if !exist || alt == "" {
 			imagesWithoutAlt++
 		}
 	})
@@ -82,24 +82,24 @@ func Analyze(rawUrl *url.URL, doc *goquery.Document, statusCode int) (*AnalysisR
 		}
 	})
 	result := &AnalysisResult{
-		URL: rawUrl.String(),
-		StatusCode: statusCode,
-		Title: title.Text(),
-		TitleLength: len(title.Text()),
-		MetaDescription: metaDesc,
+		URL:                rawUrl.String(),
+		StatusCode:         statusCode,
+		Title:              title.Text(),
+		TitleLength:        len(title.Text()),
+		MetaDescription:    metaDesc,
 		HasMetaDescription: exists,
-		H1Count: doc.Find("h1").Length(),
-		H2Count: doc.Find("h2").Length(),
-		ImageCount: images.Length(),
-		ImagesWithoutAlt: imagesWithoutAlt,
-		LinkCount: doc.Find("a").Length(),
-		CanonicalURL: canonicalURL,
-		HasCanonical: hasCanonical,
-		RobotsMeta: robotsMeta,
-		HasRobotsMeta: hasRobotsMeta,
+		H1Count:            doc.Find("h1").Length(),
+		H2Count:            doc.Find("h2").Length(),
+		ImageCount:         images.Length(),
+		ImagesWithoutAlt:   imagesWithoutAlt,
+		LinkCount:          doc.Find("a").Length(),
+		CanonicalURL:       canonicalURL,
+		HasCanonical:       hasCanonical,
+		RobotsMeta:         robotsMeta,
+		HasRobotsMeta:      hasRobotsMeta,
 		MetaDescriptionLen: descriptionLength,
-		InternalLinkCount: internalLinks,
-		ExternalLinkCount: externalLinks,
+		InternalLinkCount:  internalLinks,
+		ExternalLinkCount:  externalLinks,
 	}
 	return result, nil
 }
